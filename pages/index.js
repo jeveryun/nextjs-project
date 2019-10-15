@@ -35,7 +35,9 @@ export default () => {
   }
   return (
     <>
-     <span>Index</span>
+      <span>
+        <a href="#">Index</a>
+      </span>
     </>
   )
 }
