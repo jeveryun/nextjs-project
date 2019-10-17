@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useEffect, useLayoutEffect } from 'react'
+import React, { useState, useReducer, memo, useMemo, useCallback } from 'react'
 
 function countReducer(state, action) {
   switch (action.type) {
@@ -12,39 +12,36 @@ function countReducer(state, action) {
 }
 
 function MyCountFunc() {
-  // const [count, setCount] = useState(0)
   const [count, dispatchCount] = useReducer(countReducer, 0)
   const [name, setName] = useState('jever')
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     // setCount(c => c + 1)
-  //     dispatchCount({ type: 'minus' })
-  //   }, 1000)
+  const config = useMemo(
+    () => ({
+      text: `count is ${count}`,
+      color: count > 3 ? 'red' : 'blue'
+    }),
+    [count]
+  )
 
-  //   return () => {
-  //     clearInterval(interval)
-  //   }
-  // }, [])
+  // const handleButtonClick = useCallback(() => dispatchCount({ type: 'add' }), [])
 
-  useEffect(() => {
-    console.log('effect invoked')
-
-    return () => console.log('effect detached')
-  }, [count])
-
-  useLayoutEffect(() => {
-    console.log('effect layout invoked')
-
-    return () => console.log('effect layout detached')
-  }, [count])
+  const handleButtonClick = useMemo(() => () => dispatchCount({ type: 'add' }), [])
 
   return (
     <div>
       <input value={name} type="text" onChange={e => setName(e.target.value)} />
-      <button onClick={() => dispatchCount({ type: 'add' })}>{count}</button>
+      <Child config={config} onButtonClick={handleButtonClick}></Child>
     </div>
   )
 }
+
+const Child = memo(function({ onButtonClick, config }) {
+  console.log('child render')
+  return (
+    <button onClick={onButtonClick} style={{ color: config.color }}>
+      {config.text}
+    </button>
+  )
+})
 
 export default MyCountFunc
