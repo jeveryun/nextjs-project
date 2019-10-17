@@ -1,4 +1,4 @@
-import React, { useState, useReducer, memo, useMemo, useCallback } from 'react'
+import React, { useState, useReducer, memo, useMemo, useCallback, useRef } from 'react'
 
 function countReducer(state, action) {
   switch (action.type) {
@@ -15,6 +15,10 @@ function MyCountFunc() {
   const [count, dispatchCount] = useReducer(countReducer, 0)
   const [name, setName] = useState('jever')
 
+  const countRef = useRef()
+
+  countRef.current = count
+
   const config = useMemo(
     () => ({
       text: `count is ${count}`,
@@ -27,10 +31,17 @@ function MyCountFunc() {
 
   const handleButtonClick = useMemo(() => () => dispatchCount({ type: 'add' }), [])
 
+  const handleAlertButtonClick = function () {
+    setTimeout(() => {
+      alert(countRef.current)
+    }, 2000);
+  }
+
   return (
     <div>
       <input value={name} type="text" onChange={e => setName(e.target.value)} />
       <Child config={config} onButtonClick={handleButtonClick}></Child>
+      <button onClick={handleAlertButtonClick}>alert count</button>
     </div>
   )
 }
