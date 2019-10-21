@@ -1,4 +1,5 @@
-import { createStore, combineReducers } from 'redux'
+import { createStore, combineReducers, applyMiddleware } from 'redux'
+import ReduxThunk from 'redux-thunk'
 
 const initialState = {
   count: 0
@@ -15,7 +16,7 @@ function countReducer(state = initialState, action) {
   console.log(state, action)
   switch (action.type) {
     case ADD:
-      return { count: state.count + 1 }
+      return { count: state.count + (action.num || 1) }
     default:
       return state
   }
@@ -36,10 +37,26 @@ const allReducers = combineReducers({
   user: userReducer
 })
 
-const store = createStore(allReducers, {
-  counter: initialState,
-  user: userInitalState
-})
+const store = createStore(
+  allReducers,
+  {
+    counter: initialState,
+    user: userInitalState
+  },
+  applyMiddleware(ReduxThunk)
+)
+
+function add(num) {
+  return { type: ADD, num }
+}
+
+function addAsync(num) {
+  return dispatch => {
+    setTimeout(() => {
+      dispatch(add(num))
+    }, 1000)
+  }
+}
 
 store.dispatch({ type: ADD })
 
@@ -47,7 +64,7 @@ store.subscribe(() => {
   console.log('changed', store.getState())
 })
 
-store.dispatch({ type: ADD })
-store.dispatch({ type: UPDATE_USERNAME, name: 'lisi'})
+store.dispatch(addAsync(5))
+store.dispatch({ type: UPDATE_USERNAME, name: 'lisi' })
 
 export default store
