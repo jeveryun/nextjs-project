@@ -54,7 +54,7 @@ A.getInitialProps = async () => {
   const promise = new Promise(resolve => {
     setTimeout(() => {
       resolve({ name: 'jokcy', time: moment.default(Date.now() - 60 * 1000).fromNow() })
-    }, 100)
+    }, 1000)
   })
 
   return await promise

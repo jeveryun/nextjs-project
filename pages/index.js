@@ -1,8 +1,9 @@
 import Link from 'next/link'
 import Router from 'next/router'
 import { Button } from 'antd'
+import { connect } from 'react-redux'
 
-import store from '../store/store'
+import { add } from '../store/store'
 
 const events = [
   'routeChangeStart',
@@ -23,7 +24,7 @@ events.forEach(event => {
   Router.events.on(event, makeEvent(event))
 })
 
-export default () => {
+const Index = ({ counter, username, rename, add }) => {
   function goToTestB() {
     Router.push(
       {
@@ -37,9 +38,31 @@ export default () => {
   }
   return (
     <>
-      <span>
-        <a href="#">Index</a>
-      </span>
+      <span>Count: {counter}</span>
+      <a>UserName: {username}</a>
+      <br />
+      <input type="text" value={username} onChange={e => rename(e.target.value)} />
+      <button onClick={() => add(counter)}>do add</button>
     </>
   )
 }
+
+Index.getInitialProps = async ({ reduxStore }) => {
+  reduxStore.dispatch(add(3))
+  return {}
+}
+
+export default connect(
+  function mapStateToProps(state) {
+    return {
+      counter: state.counter.count,
+      username: state.user.username
+    }
+  },
+  function mapDispatchToProps(dispatch) {
+    return {
+      add: num => dispatch({ type: 'ADD', num }),
+      rename: name => dispatch({ type: 'UPDATE_USERNAME', name: name })
+    }
+  }
+)(Index)
