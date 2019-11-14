@@ -38,15 +38,6 @@ const allReducers = combineReducers({
   user: userReducer
 })
 
-const store = createStore(
-  allReducers,
-  {
-    counter: initialState,
-    user: userInitalState
-  },
-  composeWithDevTools(applyMiddleware(ReduxThunk))
-)
-
 export function add(num) {
   return { type: ADD, num }
 }
@@ -58,15 +49,6 @@ function addAsync(num) {
     }, 1000)
   }
 }
-
-// store.dispatch({ type: ADD })
-
-// store.subscribe(() => {
-//   console.log('changed', store.getState())
-// })
-
-// store.dispatch(addAsync(5))
-// store.dispatch({ type: UPDATE_USERNAME, name: 'lisi' })
 
 export default function initializeStore(state) {
   const store = createStore(

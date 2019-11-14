@@ -3,6 +3,7 @@ const Router = require('koa-router')
 const next = require('next')
 const session = require('koa-session')
 const Redis = require('ioredis')
+const auth = require('./server/auth')
 
 const RedisSessionStore = require('./server/session-store')
 
@@ -28,28 +29,13 @@ app.prepare().then(() => {
   server.use(session(SESSION_CONFIG, server))
 
   server.use(async (ctx, next) => {
-    // console.log(ctx.cookies.get('id'))
-
-    // //获取用户数据，比如调用 `model.getUserById(id)`
-
-    // ctx.session = ctx.session || {}
-
-    // ctx.session.user = {
-    //   username: 'jever',
-    //   age: 18
-    // }
-
-    // if (!ctx.session.user) {
-    //   ctx.session.user = {
-    //     name: 'jever',
-    //     age: '18'
-    //   }
-    // } else {
     console.log('session is:', ctx.session)
-    // }
 
     await next()
   })
+
+  // 配置处理github oauth 登录
+  auth(router)
 
   router.get('/a/:id', async ctx => {
     const id = ctx.params.id
@@ -69,7 +55,7 @@ app.prepare().then(() => {
     ctx.body = 'set session success'
   })
 
-  router.get("/delete/user" , async ctx => {
+  router.get('/delete/user', async ctx => {
     ctx.session = null
     ctx.body = 'delete session success'
   })
