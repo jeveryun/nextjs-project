@@ -2,6 +2,9 @@ import Link from 'next/link'
 import Router from 'next/router'
 import { Button } from 'antd'
 import { connect } from 'react-redux'
+import getConfig from 'next/config'
+
+const { publicRuntimeConfig } = getConfig()
 
 import { add } from '../store/store'
 
@@ -43,6 +46,7 @@ const Index = ({ counter, username, rename, add }) => {
       <br />
       <input type="text" value={username} onChange={e => rename(e.target.value)} />
       <button onClick={() => add(counter)}>do add</button>
+      <a href={publicRuntimeConfig.OAUTH_URL}>去登录</a>
     </>
   )
 }
