@@ -2,6 +2,8 @@ import { useState, useCallback } from 'react'
 import Link from 'next/link'
 import { Button, Layout, Icon, Input, Avatar } from 'antd'
 
+import Container from './Container'
+
 const { Header, Content, Footer } = Layout
 
 const githubIconStyle = {
@@ -16,6 +18,8 @@ const footerStyle = {
   textAlign: 'center'
 }
 
+const Comp = ({ color, children, style }) => <div style={{ color, ...style }}>{children}</div>
+
 export default ({ children }) => {
   const [search, setSearch] = useState('')
   const handleSearchChange = useCallback(
@@ -29,7 +33,7 @@ export default ({ children }) => {
   return (
     <Layout>
       <Header>
-        <div className="header-inner">
+        <Container renderer={<div className="header-inner"></div>}>
           <div className="header-left">
             <div className="logo">
               <Icon type="github" style={githubIconStyle} />
@@ -43,13 +47,18 @@ export default ({ children }) => {
               <Avatar size={40} icon="user" />
             </div>
           </div>
-        </div>
+        </Container>
       </Header>
-      <Content>{children}</Content>
+      <Content>
+        <Container>{children}</Container>
+      </Content>
       <Footer style={footerStyle}>
         Develop by Jever @<a href="mailto:jeveryun@qq.com">jeveryun@qq.com</a>
       </Footer>
       <style jsx>{`
+        .content {
+          color: red;
+        }
         .header-inner {
           display: flex;
           justify-content: space-between;
@@ -65,6 +74,10 @@ export default ({ children }) => {
         }
         .ant-layout {
           height: 100%;
+        }
+        .ant-layout-header {
+          padding-left: 0;
+          padding-right: 0;
         }
       `}</style>
     </Layout>
